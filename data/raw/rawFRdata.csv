@@ -1,0 +1,265 @@
+refuge,predator,prey density,alive,eaten
+hi,Gdc,1,1,0
+hi,Gdc,1,1,0
+hi,Gdc,1,1,0
+hi,Gdc,1,1,0
+hi,Gdc,2,0,2
+hi,Gdc,2,2,0
+hi,Gdc,2,2,0
+hi,Gdc,2,2,0
+hi,Gdc,3,3,0
+hi,Gdc,3,3,0
+hi,Gdc,3,3,0
+hi,Gdc,3,3,0
+hi,Gdc,4,4,0
+hi,Gdc,4,4,0
+hi,Gdc,4,0,4
+hi,Gdc,4,3,1
+hi,Gdc,5,4,1
+hi,Gdc,5,3,2
+hi,Gdc,5,3,2
+hi,Gdc,5,5,0
+hi,Gdc,6,2,4
+hi,Gdc,6,5,1
+hi,Gdc,6,4,2
+hi,Gdc,6,6,0
+hi,Gdc,7,7,0
+hi,Gdc,7,5,2
+hi,Gdc,7,4,3
+hi,Gdc,7,2,5
+hi,Gdc,8,5,3
+hi,Gdc,8,4,4
+hi,Gdc,8,2,6
+hi,Gdc,8,4,4
+hi,Gdc,15,6,9
+hi,Gdc,15,14,1
+hi,Gdc,15,10,5
+hi,Gdc,15,9,6
+hi,Gdc,25,24,1
+hi,Gdc,25,18,7
+hi,Gdc,25,20,5
+hi,Gdc,25,19,6
+hi,Gdc,40,31,9
+hi,Gdc,40,33,7
+hi,Gdc,40,33,7
+hi,Gdc,40,36,4
+mid ,Gdc,1,1,0
+mid ,Gdc,1,0,1
+mid ,Gdc,1,1,0
+mid ,Gdc,1,1,0
+mid,Gdc,2,0,2
+mid,Gdc,2,1,1
+mid,Gdc,2,1,1
+mid ,Gdc,2,1,1
+mid ,Gdc,3,2,1
+mid ,Gdc,3,2,1
+mid ,Gdc,3,3,0
+mid ,Gdc,3,3,0
+mid,Gdc,4,3,1
+mid,Gdc,4,2,2
+mid,Gdc,4,3,1
+mid ,Gdc,4,1,3
+mid,Gdc,5,5,0
+mid,Gdc,5,3,2
+mid,Gdc,5,5,0
+mid ,Gdc,5,4,1
+mid,Gdc,6,3,3
+mid,Gdc,6,1,5
+mid,Gdc,6,5,1
+mid ,Gdc,6,1,5
+mid,Gdc,7,5,2
+mid,Gdc,7,7,0
+mid,Gdc,7,7,0
+mid ,Gdc,7,7,0
+mid,Gdc,8,5,3
+mid,Gdc,8,0,8
+mid,Gdc,8,2,6
+mid ,Gdc,8,6,2
+mid,Gdc,15,9,6
+mid,Gdc,15,8,7
+mid,Gdc,15,9,6
+mid ,Gdc,15,13,2
+mid,Gdc,25,19,6
+mid,Gdc,25,12,13
+mid,Gdc,25,15,10
+mid ,Gdc,25,18,7
+mid,Gdc,40,26,14
+mid,Gdc,40,32,8
+mid,Gdc,40,29,11
+mid ,Gdc,40,36,4
+lo,Gdc,1,0,1
+lo,Gdc,1,0,1
+lo,Gdc,1,0,1
+lo,Gdc,1,0,1
+lo,Gdc,2,0,2
+lo,Gdc,2,0,2
+lo,Gdc,2,0,2
+lo,Gdc,2,0,2
+lo,Gdc,3,0,3
+lo,Gdc,3,0,3
+lo,Gdc,3,0,3
+lo,Gdc,3,0,3
+lo,Gdc,4,2,2
+lo,Gdc,4,1,3
+lo,Gdc,4,2,2
+lo,Gdc,4,1,3
+lo,Gdc,5,1,4
+lo,Gdc,5,1,4
+lo,Gdc,5,0,5
+lo,Gdc,5,2,3
+lo,Gdc,6,0,6
+lo,Gdc,6,1,5
+lo,Gdc,6,2,4
+lo,Gdc,6,5,1
+lo,Gdc,7,2,5
+lo,Gdc,7,2,5
+lo,Gdc,7,0,7
+lo,Gdc,7,2,5
+lo,Gdc,8,1,7
+lo,Gdc,8,2,6
+lo,Gdc,8,3,5
+lo,Gdc,8,1,7
+lo,Gdc,15,5,10
+lo,Gdc,15,1,14
+lo,Gdc,15,7,8
+lo,Gdc,15,6,9
+lo,Gdc,25,18,7
+lo,Gdc,25,18,7
+lo,Gdc,25,19,6
+lo,Gdc,25,16,9
+lo,Gdc,40,28,12
+lo,Gdc,40,23,17
+lo,Gdc,40,30,10
+lo,Gdc,40,27,13
+hi,Gp,1,1,0
+hi,Gp,1,1,0
+hi,Gp,1,1,0
+hi,Gp,1,1,0
+hi,Gp,2,0,2
+hi,Gp,2,1,1
+hi,Gp,2,2,0
+hi,Gp,2,2,0
+hi,Gp,3,3,0
+hi,Gp,3,3,0
+hi,Gp,3,2,1
+hi,Gp,3,3,0
+hi,Gp,4,2,2
+hi,Gp,4,3,1
+hi,Gp,4,0,4
+hi,Gp,4,4,0
+hi,Gp,5,3,2
+hi,Gp,5,3,2
+hi,Gp,5,3,2
+hi,Gp,5,4,1
+hi,Gp,6,2,4
+hi,Gp,6,2,4
+hi,Gp,6,3,3
+hi,Gp,6,6,0
+hi,Gp,7,2,5
+hi,Gp,7,3,4
+hi,Gp,7,4,3
+hi,Gp,7,1,6
+hi,Gp,8,3,5
+hi,Gp,8,3,5
+hi,Gp,8,2,6
+hi,Gp,8,6,2
+hi,Gp,15,8,7
+hi,Gp,15,12,3
+hi,Gp,15,11,4
+hi,Gp,15,8,7
+hi,Gp,25,18,7
+hi,Gp,25,16,9
+hi,Gp,25,22,3
+hi,Gp,25,18,7
+hi,Gp,40,30,10
+hi,Gp,40,35,5
+hi,Gp,40,34,6
+hi,Gp,40,31,9
+mid ,Gp,1,0,1
+mid ,Gp,1,0,1
+mid ,Gp,1,0,1
+mid ,Gp,1,1,0
+mid,Gp,2,0,2
+mid,Gp,2,1,1
+mid,Gp,2,2,0
+mid ,Gp,2,2,0
+mid ,Gp,3,3,0
+mid ,Gp,3,2,1
+mid ,Gp,3,2,1
+mid ,Gp,3,2,1
+mid,Gp,4,1,3
+mid,Gp,4,4,0
+mid,Gp,4,3,1
+mid ,Gp,4,3,1
+mid,Gp,5,3,2
+mid,Gp,5,4,1
+mid,Gp,5,5,0
+mid ,Gp,5,4,1
+mid,Gp,5,2,4
+mid,Gp,6,2,4
+mid,Gp,6,3,3
+mid ,Gp,6,5,1
+mid,Gp,7,4,3
+mid,Gp,7,5,2
+mid,Gp,7,3,4
+mid ,Gp,7,3,4
+mid,Gp,8,1,7
+mid,Gp,8,3,5
+mid,Gp,8,6,2
+mid ,Gp,8,2,6
+mid,Gp,15,12,3
+mid,Gp,15,9,6
+mid,Gp,15,9,6
+mid ,Gp,15,8,7
+mid,Gp,25,23,2
+mid,Gp,25,23,2
+mid,Gp,25,12,13
+mid ,Gp,25,15,10
+mid,Gp,40,27,13
+mid,Gp,40,28,12
+mid,Gp,40,37,3
+mid ,Gp,40,30,10
+lo,Gp,1,0,1
+lo,Gp,1,0,1
+lo,Gp,1,0,1
+lo,Gp,1,0,1
+lo,Gp,2,0,2
+lo,Gp,2,0,2
+lo,Gp,2,1,1
+lo,Gp,2,1,1
+lo,Gp,3,0,3
+lo,Gp,3,0,3
+lo,Gp,3,0,3
+lo,Gp,3,1,2
+lo,Gp,4,1,3
+lo,Gp,4,0,4
+lo,Gp,4,0,4
+lo,Gp,4,1,3
+lo,Gp,5,0,5
+lo,Gp,5,0,5
+lo,Gp,5,1,4
+lo,Gp,5,1,4
+lo,Gp,6,2,4
+lo,Gp,6,1,5
+lo,Gp,6,4,2
+lo,Gp,6,0,6
+lo,Gp,7,2,5
+lo,Gp,7,3,4
+lo,Gp,7,4,3
+lo,Gp,7,1,6
+lo,Gp,8,4,4
+lo,Gp,8,0,8
+lo,Gp,8,1,7
+lo,Gp,8,0,8
+lo,Gp,15,5,10
+lo,Gp,15,9,6
+lo,Gp,15,10,5
+lo,Gp,15,8,7
+lo,Gp,25,20,5
+lo,Gp,25,16,9
+lo,Gp,25,11,14
+lo,Gp,25,10,15
+lo,Gp,40,26,14
+lo,Gp,40,28,12
+lo,Gp,40,31,9
+lo,Gp,40,27,13
