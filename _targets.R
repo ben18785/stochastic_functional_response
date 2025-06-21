@@ -4,11 +4,11 @@ library(targets)
 
 # Set target options:
 tar_option_set(
-  packages = c("tidyverse")
+  packages = c("tidyverse", "rstan")
 )
 
 # Run the R scripts in the R/ folder with your custom functions:
-# tar_source("other_functions.R") # Source other scripts as needed.
+tar_source("src/r/")
 
 # Replace the target list below with your own:
 list(
@@ -111,5 +111,35 @@ list(
     write_csv(data_fw$gdc, "data/processed/gdc.csv")
     write_csv(data_fw$gp, "data/processed/gp.csv")
     write_csv(data_vulcic, "data/processed/vulcic.csv")
-  })
+  }),
+  
+  
+  # Fit basic binomial type-II model
+  tar_target(stan_model_binomial_raw, "src/stan/binomial_ordinal.stan",
+             format = "file"),
+  tar_target(stan_model_binomial, stan_model(stan_model_binomial_raw)),
+  tar_target(stan_data_bythotrephes, {
+    
+    df <- data_bythotrephes %>% 
+      mutate(
+        levels=as.numeric(size)
+      )
+    levels_h <- df$levels
+    levels_a <- df$levels
+    prepare_stan_data_covariates(
+       data_bythotrephes,
+       levels_h=levels_h,
+       levels_a=levels_a)
+    }),
+  tar_target(fit_bythotrephes_ordinal,
+             sampling(stan_model_binomial,
+                      data=stan_data_bythotrephes,
+                      iter=200,
+                      chains=4)),
+  tar_target(plot_fit_bythotrephes_ordinal,
+             plot_posterior_predictive_stan(
+               fit_bythotrephes_ordinal,
+               stan_data_bythotrephes,
+               data_bythotrephes,
+               "size"))
 )
