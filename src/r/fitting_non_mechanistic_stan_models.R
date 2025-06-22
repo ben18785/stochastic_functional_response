@@ -52,14 +52,7 @@ extract_quantile_longer <- function(quantile_level, functional_response_sim) {
     rename(covariate_level=name)
 }
 
-plot_posterior_predictive_stan <- function(fit, data_stan, df, covar_name) {
-  
-  df_1 <- copy_column_str(df, covar_name, "covariate") %>% 
-    mutate(covariate_level=as.numeric(covariate))
-  
-  lookup_levels <- df_1 %>% 
-    select(covariate_level, covariate) %>% 
-    unique()
+plot_posterior_predictive_stan <- function(fit, df, covar_name=NULL) {
   
   functional_response_sim = rstan::extract(fit, "prey_eaten_sim")[[1]]
   lower <- extract_quantile_longer(0.025, functional_response_sim) %>% 
@@ -76,10 +69,24 @@ plot_posterior_predictive_stan <- function(fit, data_stan, df, covar_name) {
     left_join(upper) %>% 
     left_join(middle) %>% 
     left_join(lower_1) %>% 
-    left_join(upper_1) %>% 
-    left_join(lookup_levels)
+    left_join(upper_1)
   
-  ggplot(df_1, aes(x=n_prey_initial)) +
+  if(!is.null(covar_name)) {
+    df_1 <- copy_column_str(df, covar_name, "covariate") %>% 
+      mutate(covariate_level=as.numeric(covariate))
+    
+    lookup_levels <- df_1 %>% 
+      select(covariate_level, covariate) %>% 
+      unique()
+    
+    df_qs <- df_qs %>% 
+      left_join(lookup_levels)
+  } else {
+    df_1 <- df %>% 
+      mutate(covariate="")
+  }
+  
+  g <- ggplot(df_1, aes(x=n_prey_initial)) +
     geom_ribbon(data=df_qs, aes(ymin=lower, ymax=upper),
                 fill="blue", alpha=0.5) +
     geom_ribbon(data=df_qs, aes(ymin=lower_1, ymax=upper_1),
@@ -89,7 +96,11 @@ plot_posterior_predictive_stan <- function(fit, data_stan, df, covar_name) {
     geom_smooth(aes(y=n_eaten), se=FALSE, colour="black",
                 linetype = "dashed",
                 linewidth = 0.5) +
-    facet_wrap(~covariate) +
     xlab("# initial prey") +
     ylab("# prey eaten")
+  
+  if(!is.null(covar_name))
+    g <- g + facet_wrap(~covariate)
+  
+  g
 }

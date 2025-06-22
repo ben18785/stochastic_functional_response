@@ -4,8 +4,9 @@ library(targets)
 
 # Set target options:
 tar_option_set(
-  packages = c("tidyverse", "rstan")
+  packages = c("tidyverse", "rstan", "loo")
 )
+options(mc.cores=4)
 
 # Run the R scripts in the R/ folder with your custom functions:
 tar_source("src/r/")
@@ -14,6 +15,7 @@ tar_source("src/r/")
 list(
   
   # datasets from frair r package: https://github.com/dpritchard/frair/tree/master/data
+  # "size" here refers to the prey size (https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.12784)
   tar_target(data_bythotrephes, {
     load("data/raw/bythotrephes.RData")
     df <- bythotrephes
@@ -114,8 +116,10 @@ list(
   }),
   
   
-  # Fit basic binomial type-II model
-  tar_target(stan_model_binomial_raw, "src/stan/binomial_ordinal.stan",
+  # bythotrephes
+  
+  ## Fit basic binomial type-II model
+  tar_target(stan_model_binomial_raw, "src/stan/binomial.stan",
              format = "file"),
   tar_target(stan_model_binomial, stan_model(stan_model_binomial_raw)),
   tar_target(stan_data_bythotrephes, {
@@ -131,15 +135,250 @@ list(
        levels_h=levels_h,
        levels_a=levels_a)
     }),
-  tar_target(fit_bythotrephes_ordinal,
+  tar_target(fit_bythotrephes_binomial,
              sampling(stan_model_binomial,
                       data=stan_data_bythotrephes,
                       iter=200,
                       chains=4)),
-  tar_target(plot_fit_bythotrephes_ordinal,
+  tar_target(plot_fit_bythotrephes_binomial,
              plot_posterior_predictive_stan(
-               fit_bythotrephes_ordinal,
-               stan_data_bythotrephes,
+               fit_bythotrephes_binomial,
                data_bythotrephes,
-               "size"))
+               "size")),
+  
+  ## fit mechanistic model
+  tar_target(stan_model_mechanistic_raw, "src/stan/mechanistic_constant.stan",
+             format = "file"),
+  tar_target(stan_model_mechanistic, stan_model(stan_model_mechanistic_raw)),
+  tar_target(stan_data_mechanistic_bythotrephes, {
+    
+    df <- data_bythotrephes %>% 
+      arrange(size, n_prey_initial) %>% 
+      group_by(size, n_prey_initial) %>% 
+      mutate(group_index = cur_group_id()) %>% 
+      ungroup()
+    df_sum <- df %>% 
+      group_by(group_index) %>% 
+      summarise(
+        n=n()
+      )
+    
+    df_covar <- df %>% 
+      select(size, n_prey_initial) %>% 
+      unique()
+    
+    X <- model.matrix(~ size - 1, data = df_covar)
+    
+    prey_density_sim <- seq(1, max(df$n_prey_initial))
+    X_a_sim <- unique(X)
+    
+    list(
+      n = nrow(df),
+      n_prey_remaining = df$n_alive,
+      t_obs = 1,
+      n_covariate_blocks = nrow(X),
+      n_covariates_a = ncol(X),
+      n_covariates_r = ncol(X),
+      X_a = X,
+      X_r = X,
+      n_prey_initial_distinct = df_covar$n_prey_initial,
+      len_blocks = df_sum$n,
+      prey_density_sim = prey_density_sim,
+      T_sim = length(prey_density_sim),
+      X_a_sim = X_a_sim,
+      X_r_sim = X_a_sim,
+      n_covariate_blocks_simple_sim = nrow(X_a_sim)
+    )
+  }),
+  tar_target(fit_bythotrephes_mechanistic,
+             sampling(stan_model_mechanistic,
+                      data=stan_data_mechanistic_bythotrephes,
+                      iter=200,
+                      chains=4)),
+  tar_target(plot_fit_bythotrephes_mechanistic,
+             plot_posterior_predictive_stan(
+               fit_bythotrephes_mechanistic,
+               data_bythotrephes,
+               "size")),
+  tar_target(loo_bythotrephes, {
+    
+    log_like_binomial <- loo::extract_log_lik(fit_bythotrephes_binomial, "log_likelihood")
+    log_like_mechanistic <- loo::extract_log_lik(fit_bythotrephes_mechanistic, "log_likelihood")
+    
+    loo_binomial <- loo::loo(log_like_binomial)
+    loo_mechanistic <- loo::loo(log_like_mechanistic)
+    loo::loo_compare(loo_binomial, loo_mechanistic)
+  }),
+  
+  # Gammarus celticus (native species of shrimp parasite)
+  ## binomial
+  tar_target(stan_data_gammarus_celticus, {
+    
+    df <- data_gammarus$celticus %>% 
+      mutate(
+        levels=1
+      )
+    levels_h <- df$levels
+    levels_a <- df$levels
+    prepare_stan_data_covariates(
+      data_gammarus$celticus,
+      levels_h=levels_h,
+      levels_a=levels_a)
+  }),
+  tar_target(fit_gammarus_celticus_binomial,
+             sampling(stan_model_binomial,
+                      data=stan_data_gammarus_celticus,
+                      iter=200,
+                      chains=4)),
+  tar_target(plot_fit_gammarus_celticus_binomial,
+             plot_posterior_predictive_stan(
+               fit_gammarus_celticus_binomial,
+               data_gammarus$celticus)),
+  
+  ## mechanistic model
+  tar_target(stan_data_mechanistic_gammarus_celticus, {
+    
+    df <- data_gammarus$celticus %>% 
+      arrange(n_prey_initial) %>% 
+      group_by(n_prey_initial) %>% 
+      mutate(group_index = cur_group_id()) %>% 
+      ungroup()
+    df_sum <- df %>% 
+      group_by(group_index) %>% 
+      summarise(
+        n=n()
+      )
+    
+    df_covar <- df %>% 
+      select(n_prey_initial) %>% 
+      unique()
+    
+    X <- rep(1, nrow(df_covar)) %>% 
+      as.matrix()
+    
+    prey_density_sim <- seq(1, max(df$n_prey_initial))
+    X_a_sim <- unique(X)
+    
+    list(
+      n = nrow(df),
+      n_prey_remaining = df$n_alive,
+      t_obs = 1,
+      n_covariate_blocks = nrow(X),
+      n_covariates_a = ncol(X),
+      n_covariates_r = ncol(X),
+      X_a = X,
+      X_r = X,
+      n_prey_initial_distinct = df_covar$n_prey_initial,
+      len_blocks = df_sum$n,
+      prey_density_sim = prey_density_sim,
+      T_sim = length(prey_density_sim),
+      X_a_sim = X_a_sim,
+      X_r_sim = X_a_sim,
+      n_covariate_blocks_simple_sim = nrow(X_a_sim)
+    )
+  }),
+  tar_target(fit_gammarus_celticus_mechanistic,
+             sampling(stan_model_mechanistic,
+                      data=stan_data_mechanistic_gammarus_celticus,
+                      iter=200,
+                      chains=4)),
+  tar_target(plot_gammarus_celticus_mechanistic,
+             plot_posterior_predictive_stan(
+               fit_gammarus_celticus_mechanistic,
+               data_gammarus$celticus)),
+  tar_target(loo_gammarus_celticus, {
+    
+    log_like_binomial <- loo::extract_log_lik(fit_gammarus_celticus_binomial, "log_likelihood")
+    log_like_mechanistic <- loo::extract_log_lik(fit_gammarus_celticus_mechanistic, "log_likelihood")
+    
+    loo_binomial <- loo::loo(log_like_binomial)
+    loo_mechanistic <- loo::loo(log_like_mechanistic)
+    loo::loo_compare(loo_binomial, loo_mechanistic)
+  }),
+  
+  # Gammarus pulex (invasive species of shrimp parasite)
+  ## binomial
+  tar_target(stan_data_gammarus_pulex, {
+    
+    df <- data_gammarus$pulex %>% 
+      mutate(
+        levels=1
+      )
+    levels_h <- df$levels
+    levels_a <- df$levels
+    prepare_stan_data_covariates(
+      data_gammarus$pulex,
+      levels_h=levels_h,
+      levels_a=levels_a)
+  }),
+  tar_target(fit_gammarus_pulex_binomial,
+             sampling(stan_model_binomial,
+                      data=stan_data_gammarus_pulex,
+                      iter=200,
+                      chains=4)),
+  tar_target(plot_fit_gammarus_pulex_binomial,
+             plot_posterior_predictive_stan(
+               fit_gammarus_pulex_binomial,
+               data_gammarus$pulex)),
+  
+  ## mechanistic model
+  tar_target(stan_data_mechanistic_gammarus_pulex, {
+    
+    df <- data_gammarus$pulex %>% 
+      arrange(n_prey_initial) %>% 
+      group_by(n_prey_initial) %>% 
+      mutate(group_index = cur_group_id()) %>% 
+      ungroup()
+    df_sum <- df %>% 
+      group_by(group_index) %>% 
+      summarise(
+        n=n()
+      )
+    
+    df_covar <- df %>% 
+      select(n_prey_initial) %>% 
+      unique()
+    
+    X <- rep(1, nrow(df_covar)) %>% 
+      as.matrix()
+    
+    prey_density_sim <- seq(1, max(df$n_prey_initial))
+    X_a_sim <- unique(X)
+    
+    list(
+      n = nrow(df),
+      n_prey_remaining = df$n_alive,
+      t_obs = 1,
+      n_covariate_blocks = nrow(X),
+      n_covariates_a = ncol(X),
+      n_covariates_r = ncol(X),
+      X_a = X,
+      X_r = X,
+      n_prey_initial_distinct = df_covar$n_prey_initial,
+      len_blocks = df_sum$n,
+      prey_density_sim = prey_density_sim,
+      T_sim = length(prey_density_sim),
+      X_a_sim = X_a_sim,
+      X_r_sim = X_a_sim,
+      n_covariate_blocks_simple_sim = nrow(X_a_sim)
+    )
+  }),
+  tar_target(fit_gammarus_pulex_mechanistic,
+             sampling(stan_model_mechanistic,
+                      data=stan_data_mechanistic_gammarus_pulex,
+                      iter=200,
+                      chains=4)),
+  tar_target(plot_gammarus_pulex_mechanistic,
+             plot_posterior_predictive_stan(
+               fit_gammarus_pulex_mechanistic,
+               data_gammarus$pulex)),
+  tar_target(loo_gammarus_pulex, {
+    
+    log_like_binomial <- loo::extract_log_lik(fit_gammarus_pulex_binomial, "log_likelihood")
+    log_like_mechanistic <- loo::extract_log_lik(fit_gammarus_pulex_mechanistic, "log_likelihood")
+    
+    loo_binomial <- loo::loo(log_like_binomial)
+    loo_mechanistic <- loo::loo(log_like_mechanistic)
+    loo::loo_compare(loo_binomial, loo_mechanistic)
+  })
 )

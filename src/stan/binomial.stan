@@ -26,8 +26,8 @@ data {
 
 
 parameters {
-  ordered[n_levels_h] rev_logit_h;
-  positive_ordered[n_levels_a] a;
+  vector[n_levels_h] rev_logit_h;
+  vector<lower=0>[n_levels_a] a;
 }
 
 transformed parameters {
@@ -56,8 +56,14 @@ model {
 }
 
 generated quantities {
+  vector[T] log_likelihood;
   matrix[T_sim, n_levels_sim] functional_response_sim;
   matrix[T_sim, n_levels_sim] prey_eaten_sim;
+  
+  for(i in 1:T) {
+    log_likelihood[i] = binomial_lpmf(
+      prey_eaten[i]| prey_density[i], functional_response[i]/prey_density[i]);
+  }
   
   for(j in 1:n_levels_sim) {
     real h_temp = h[levels_sim[j, 1]];
