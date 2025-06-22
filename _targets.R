@@ -210,7 +210,9 @@ list(
     loo::loo_compare(loo_binomial, loo_mechanistic)
   }),
   
-  # Gammarus celticus (native species of shrimp parasite)
+  # Gammarus celticus (native species of parasite preying on dipteran larvae)
+  # original data here (with more untapped datasets + more info on data e.g. replicates, experimental arms):
+  # https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/1365-2656.12292 (which indicates some predator-independent prey mortality albeit at low levels)
   ## binomial
   tar_target(stan_data_gammarus_celticus, {
     
@@ -296,7 +298,7 @@ list(
     loo::loo_compare(loo_binomial, loo_mechanistic)
   }),
   
-  # Gammarus pulex (invasive species of shrimp parasite)
+  # Gammarus pulex (invasive species of parasite preying on dipteran larvae)
   ## binomial
   tar_target(stan_data_gammarus_pulex, {
     
